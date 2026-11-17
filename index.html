@@ -1,0 +1,982 @@
+<!DOCTYPE html>
+<!-- test-page-v3 · сторінка тесту для учнів (GitHub Pages). Нічого тут не змінюйте: завдання, час і налаштування
+     сторінка бере зі скрипту Google Apps Script, ID якого стоїть у посиланні після ?s= -->
+<html lang="uk" translate="no">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<!-- Просимо браузер НЕ перефарбовувати сторінку в темну тему (через це в учениці не було видно завдань) -->
+<meta name="color-scheme" content="only light">
+<meta name="darkreader-lock">
+<meta name="google" content="notranslate">
+<meta name="robots" content="noindex, nofollow">
+<meta name="referrer" content="no-referrer">
+<meta name="format-detection" content="telephone=no">
+<title>Тест</title>
+<style>
+  :root{color-scheme:only light;--p:#4b2c83;--p2:#ede7f6;--bg:#f0ebf8;--card:#fff;--txt:#202124;--mut:#5f6368;--red:#c5221f;--ok:#137333;--okbg:#e6f4ea}
+  *{box-sizing:border-box}
+  html,body{background:var(--bg);color:var(--txt)}
+  body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;font-size:16px;-webkit-text-size-adjust:100%;line-height:1.4}
+  .wrap{max-width:760px;margin:0 auto;padding:10px 10px 90px}
+  .card{background:var(--card);color:var(--txt);border-radius:10px;border:1px solid #dadce0;padding:18px 18px;margin:10px 0}
+  .head{border-top:10px solid var(--p)}
+  h1{font-size:22px;margin:0 0 6px;font-weight:500}
+  h2{font-size:19px;margin:0;font-weight:600;color:var(--p)}
+  .mut{color:var(--mut);font-size:14px;line-height:1.5}
+  .small{font-size:12.5px}
+  label.f{display:block;font-weight:600;margin:14px 0 6px}
+  input.wide,select.wide{width:100%;font:inherit;padding:11px;border:1px solid #b9b9b9;border-radius:8px;background:#fff;color:var(--txt)}
+  input:focus,textarea:focus,select:focus,button:focus-visible{outline:2px solid var(--p);outline-offset:1px}
+  button{font:inherit;background:var(--p);color:#fff;border:0;border-radius:8px;padding:13px 22px;cursor:pointer;font-weight:600;touch-action:manipulation}
+  button:disabled{opacity:.5;cursor:default}
+  button.link{background:none;color:var(--mut);padding:6px 0;font-weight:500;text-decoration:underline;font-size:13px}
+  body.lock{user-select:none;-webkit-user-select:none;-webkit-touch-callout:none}
+  body.lock textarea,body.lock input{user-select:text;-webkit-user-select:text}
+  .qhead{display:flex;justify-content:space-between;align-items:center;gap:10px;font-weight:600;color:var(--p)}
+  .qt{font-size:28px;font-weight:700;color:var(--p);font-variant-numeric:tabular-nums}
+  .qt.low{color:var(--red)}
+  .qbar{height:6px;background:var(--p2);border-radius:3px;overflow:hidden;margin:8px 0 10px}
+  .qbar i{display:block;height:100%;width:100%;background:var(--p);transition:width .5s linear}
+  .q{font-weight:600;font-size:17px;margin:6px 0 10px;min-height:24px}
+  .opt{display:flex;gap:10px;align-items:flex-start;padding:8px 10px;margin:7px 0;border:2px solid #dadce0;border-radius:8px;background:#fff}
+  .opt .l{font-weight:700;color:var(--p);flex:none;min-width:26px;padding-top:6px}
+  .opt .ot{flex:1;min-width:0;font-size:16px;font-weight:400;min-height:24px}
+  .opt.on{border-color:var(--ok);box-shadow:0 0 0 2px #ceead6}
+  .opt.on .l{color:var(--ok)}
+  .q canvas,.ot canvas{display:block;pointer-events:none;border-radius:4px}
+  /* запасний режим «звичайні літери»: власні кольори, щоб текст було видно за будь-якої теми */
+  .plain{color:#111!important;background:#fff!important;padding:6px;border-radius:4px;-webkit-text-fill-color:#111}
+  .ansbox{margin:14px 0 6px;padding-top:12px;border-top:1px dashed #c9c9c9}
+  .ansbox label{display:block;font-weight:600;margin-bottom:6px}
+  .ansrow{display:flex;gap:8px;align-items:stretch}
+  textarea.ans{flex:1;min-width:0;min-height:100px;font:inherit;font-size:17px;line-height:1.45;padding:10px;border:2px solid #9a86c8;border-radius:8px;resize:vertical;color:var(--txt);background:#fff}
+  textarea.ans.ok{border-color:var(--ok);background:#f3faf5}
+  .chk{flex:none;width:68px;padding:0;font-size:32px;line-height:1;background:#fff;color:var(--ok);border:2px solid var(--ok);border-radius:8px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px}
+  .chk small{font-size:11px;font-weight:600;color:var(--ok)}
+  .chk.on{background:var(--ok);color:#fff}
+  .chk.on small{color:#fff}
+  .chk.pulse{animation:pulse .9s ease 2}
+  @keyframes pulse{50%{transform:scale(1.12);box-shadow:0 0 0 6px #ceead6}}
+  .hint{font-size:14px;color:var(--mut);margin-top:6px;min-height:20px;line-height:1.45}
+  .hint.good{color:var(--ok);font-weight:600}
+  .hint.bad{color:var(--red);font-weight:600}
+  .bar{position:sticky;top:0;z-index:5;background:#fff;color:var(--txt);border-bottom:1px solid #dadce0;box-shadow:0 1px 4px rgba(0,0,0,.08)}
+  .bar .in{max-width:760px;margin:0 auto;padding:8px 12px;display:flex;gap:12px;align-items:center;flex-wrap:wrap;font-size:14px}
+  .timer{font-weight:700;color:var(--p);font-variant-numeric:tabular-nums}
+  .timer.low{color:var(--red)}
+  .prog{flex:1;min-width:80px;height:8px;background:var(--p2);border-radius:4px;overflow:hidden}
+  .prog i{display:block;height:100%;width:0;background:var(--p)}
+  .ex{color:var(--mut)} .ex.bad{color:var(--red);font-weight:700}
+  .warn{background:#fce8e6;border:1px solid #f4c7c3;color:#a50e0e;border-radius:8px;padding:12px 14px;line-height:1.5;font-size:14px}
+  .info{background:#e8f0fe;border:1px solid #c6dafc;color:#174ea6;border-radius:8px;padding:12px 14px;line-height:1.5;font-size:14px;margin:12px 0}
+  .rules{background:#fff8e1;border:1px solid #f6d58b;color:#3c2a00;border-radius:8px;padding:12px 14px;line-height:1.55;font-size:14.5px}
+  .done{text-align:center}
+  .big{font-size:44px;font-weight:700;color:var(--p);margin:8px 0}
+  .err{color:var(--red);font-size:14px;margin:8px 0;min-height:18px;font-weight:600}
+  .hidden{display:none!important}
+  #cover{display:none;text-align:center}
+  #cover .ico{font-size:44px;margin:6px 0}
+  #cover.bad{border:2px solid var(--red)}
+  #cover.bad h2{color:var(--red)}
+  body.away #qcard{display:none}
+  body.away #cover{display:block}
+  #toast{position:fixed;left:50%;bottom:18px;transform:translateX(-50%);background:#202124;color:#fff;padding:10px 16px;border-radius:8px;font-size:14px;z-index:20;max-width:92vw;text-align:center;opacity:0;transition:opacity .25s;pointer-events:none}
+  #toast.on{opacity:1}
+  @media print{body{display:none!important}}
+</style>
+</head>
+<body>
+<div class="bar hidden" id="bar"><div class="in">
+  <span>⏱ Загалом: <span class="timer" id="tm">--:--</span></span>
+  <span id="cnt"></span>
+  <div class="prog"><i id="pr"></i></div>
+  <span class="ex" id="ex">Виходів: 0</span>
+</div></div>
+
+<div class="wrap">
+  <div class="card head">
+    <h1 id="ttl">Тест</h1>
+    <div class="mut" id="sub"></div>
+  </div>
+
+  <div id="loading" class="card mut">Завантаження…</div>
+  <div id="net" class="warn hidden">Немає інтернету або сервер зайнятий. Відповіді збережено на пристрої — вони надішлються самі. Продовжуй працювати.</div>
+  <div id="dupBox" class="card hidden">
+    <div class="warn"><b>Тест уже відкрито в іншій вкладці чи вікні цього браузера.</b><br>Закрий цю вкладку й повернися до тієї. Це записано в таблицю вчителя.</div>
+    <p><button id="dupBtn" type="button">Перевірити ще раз</button></p>
+  </div>
+
+  <div id="login" class="card hidden">
+    <div class="rules">
+      <b>Правила роботи</b><br>
+      • Завдання показуються <b>по одному</b>. На кожне — <b id="perTxt"></b>. Повернутися назад не можна.<br>
+      • Обери правильний варіант і <b>почни писати його</b> в полі «Моя відповідь».
+        <b>Після 2 правильних літер слово допишеться саме</b>, а щойно почнеш <b>3-тє слово — підставиться весь варіант</b>.
+        Розділові знаки на бал не впливають. Кожне завдання — <b id="ptsTxt"></b>.<br>
+      • Перевір текст і натисни <b>✓</b> праворуч від поля (або ✓ «Готово» на клавіатурі), потім «Записати й далі».
+        Галочка ✓ — це <b>не</b> вихід, її натискати можна.<br>
+      • <b>Голосове введення й вставлення тексту заборонені</b> — такий текст не приймається, а спроба записується.<br>
+      • Тест відкриється <b>на весь екран</b>. <b>Не виходь зі сторінки тесту.</b> Інші вкладки й додатки, згортання,
+        блокування екрана, Google Lens, «Обвести й шукати», Gemini, шторка сповіщень, бічні панелі, розділений екран,
+        кнопка «Назад», перезавантаження й друга вкладка з тестом <b>записуються в таблицю вчителя</b> (коли й на скільки секунд).
+        Поки тебе немає на сторінці, завдання сховане, а час іде.<br>
+      • Не бачиш тексту завдання? Натисни «Не бачу тексту завдання» під полем відповіді.<br>
+      • Пройти тест можна <b>лише один раз</b>.
+    </div>
+    <label class="f" for="nm">Прізвище та ім'я</label>
+    <input class="wide" type="text" id="nm" autocomplete="off" autocorrect="off" spellcheck="false" maxlength="80" placeholder="Наприклад: Коваленко Марія">
+    <label class="f" for="cl">Клас</label>
+    <select class="wide" id="cl"><option value="">— обери свій клас —</option></select>
+    <label class="f" for="cd">Код доступу <span class="mut">(лише якщо вчитель дав тобі код)</span></label>
+    <input class="wide" type="text" id="cd" autocomplete="off" maxlength="20" placeholder="Залиш порожнім, якщо коду немає">
+    <div class="err" id="lerr"></div>
+    <div class="info" id="winMsg" style="display:none"></div>
+    <button id="go" type="button">Почати роботу</button>
+  </div>
+
+  <div id="quiz" class="hidden">
+    <div class="card" id="cover">
+      <div class="ico" id="covIco">🔒</div>
+      <h2 id="covT">Завдання сховано</h2>
+      <p id="covTxt"></p>
+      <p class="mut" id="covSub"></p>
+      <button id="covBtn" type="button">Продовжити</button>
+    </div>
+    <div class="card" id="qcard">
+      <div class="qhead"><span id="qno"></span><span class="qt" id="qtm">1:00</span></div>
+      <div class="qbar"><i id="qpr"></i></div>
+      <div class="mut small" id="qsec"></div>
+      <div class="q" id="qtext" aria-hidden="true"></div>
+      <div id="opts" aria-hidden="true"></div>
+      <div class="ansbox">
+        <label for="ans">Моя відповідь — почни писати обраний варіант:</label>
+        <div class="ansrow">
+          <textarea class="ans" id="ans" rows="3" autocomplete="off" spellcheck="false" autocapitalize="sentences" autocorrect="off" enterkeyhint="done" placeholder="Пиши тут…"></textarea>
+          <button type="button" class="chk" id="chk" title="Текст написано — підтвердити">✓<small>Готово</small></button>
+        </div>
+        <div class="hint" id="hint"></div>
+      </div>
+      <div class="err" id="qerr"></div>
+      <button id="next" type="button">Записати й далі →</button>
+      <p class="mut small">Повернутися до попереднього завдання не можна. Коли час мине, написаний текст збережеться сам.</p>
+      <button type="button" class="link" id="nosee">Не бачу тексту завдання</button>
+    </div>
+  </div>
+
+  <div id="fin" class="card hidden"><p id="finTxt">Здаємо роботу…</p></div>
+  <div id="done" class="card done hidden"></div>
+</div>
+<div id="toast"></div>
+
+<script>
+'use strict';
+/* ================= АВТОДОПИСУВАННЯ (чисті функції) =================
+   normText — так само, як на сервері: лише слова, малі літери, без розділових знаків і апострофів.
+   analyze(текст, варіанти, налаштування) → що зробити з полем:
+     act:'word' — дописати поточне слово (після WORD_LETTERS правильних літер, якщо воно однозначне);
+     act:'fill' — підставити весь варіант (з AUTOFILL_WORD-го слова, якщо варіант однозначний). */
+var AC = (function () {
+  var MAP = { a: 'а', c: 'с', e: 'е', i: 'і', o: 'о', p: 'р', x: 'х', y: 'у', k: 'к' };
+  function normText(s) {
+    return String(s || '').toLowerCase()
+      .replace(/[aceiopxyk]/g, function (ch) { return MAP[ch] || ch; })
+      .replace(/ё/g, 'е').replace(/[ʼ’'`]/g, '')
+      .replace(/[^0-9a-zа-яіїєґ]+/g, ' ').trim();
+  }
+  var WRE = /[0-9A-Za-zА-Яа-яЁёІіЇїЄєҐґʼ’'`]+/g;
+  function toks(s) {
+    s = String(s || '');
+    var out = [], m;
+    WRE.lastIndex = 0;
+    while ((m = WRE.exec(s))) {
+      var n = normText(m[0]);
+      if (n) out.push({ n: n, s: m.index, e: m.index + m[0].length, r: m[0] });
+    }
+    return out;
+  }
+  function prep(list) { return list.map(function (raw) { return { raw: raw, t: toks(raw), n: normText(raw) }; }); }
+  function firstBad(t, O) {
+    for (var j = 0; j < t.length; j++) {
+      var ok = O.some(function (o) {
+        for (var q = 0; q <= j; q++) {
+          if (!o.t[q]) return false;
+          if (q < j ? o.t[q].n !== t[q].n : o.t[q].n.indexOf(t[q].n) !== 0) return false;
+        }
+        return true;
+      });
+      if (!ok) return t[j].r;
+    }
+    return '';
+  }
+  function analyze(value, O, cfg) {
+    value = String(value || '');
+    var t = toks(value), last = t[t.length - 1];
+    var inWord = !!last && last.e === value.length;
+    var done = inWord ? t.slice(0, -1) : t, cur = inWord ? last : null, k = done.length;
+    var full = normText(value);
+    var res = { cand: [], match: -1, bad: '', act: null, val: value, part: cur ? cur.r : '' };
+    O.forEach(function (o, i) { if (full && o.n === full) res.match = i; });
+    var pre = [];
+    O.forEach(function (o, i) {
+      if (o.t.length < k) return;
+      for (var j = 0; j < k; j++) if (o.t[j].n !== done[j].n) return;
+      pre.push(i);
+    });
+    if (!pre.length) { res.bad = firstBad(t, O); return res; }
+    if (!cur) { res.cand = pre.filter(function (i) { return O[i].t.length > k || O[i].n === full; }); return res; }
+    var cand = pre.filter(function (i) { var w = O[i].t[k]; return w && w.n.indexOf(cur.n) === 0; });
+    res.cand = cand;
+    if (!cand.length) { res.bad = cur.r; return res; }
+    if (cfg.autoWord > 0 && k + 1 >= cfg.autoWord && cand.length === 1 && O[cand[0]].n !== full) {
+      res.act = 'fill'; res.val = O[cand[0]].raw; return res;
+    }
+    if (cfg.wordOn) {
+      var seen = {}, cnt = 0, w0 = null, more = false;
+      cand.forEach(function (i) {
+        var w = O[i].t[k];
+        if (!seen[w.n]) { seen[w.n] = 1; cnt++; w0 = w; }
+        if (O[i].t.length > k + 1) more = true;
+      });
+      if (cnt === 1 && cur.n.length >= Math.min(cfg.letters || 2, w0.n.length)) {
+        var nv = value.slice(0, cur.s) + w0.r + (more ? ' ' : '');
+        if (nv !== value) { res.act = 'word'; res.val = nv; }
+      }
+    }
+    return res;
+  }
+  return { normText: normText, toks: toks, prep: prep, analyze: analyze };
+})();
+
+/* ================= ЗВ'ЯЗОК ІЗ СЕРВЕРОМ =================
+   Сторінка звертається до веб-додатка Apps Script БЕЗ файлів cookie акаунта Google (credentials:'omit'),
+   тобто анонімно: обмеження дитячих (до 13 років) і шкільних акаунтів не діють. */
+var API = (function () {
+  var m = String(location.search).match(/[?&]s=([\w-]{20,})/);
+  return m ? 'https://script.google.com/macros/s/' + m[1] + '/exec' : '';
+})();
+/** fail(null) — тимчасова проблема (немає інтернету / Google перевантажений): запит варто повторити */
+function callApi(fn, args, ok, fail) {
+  var o = { method: 'POST', body: JSON.stringify({ fn: fn, args: args || [] }), credentials: 'omit', redirect: 'follow', cache: 'no-store' };
+  fetch(API, o)
+    .then(function (r) { return r.json(); })
+    .then(function (j) {
+      if (j && j.ok) ok(j.r);
+      else if (j && j.retry) fail(null);
+      else fail(new Error((j && j.e) || 'Помилка сервера'));
+    })
+    .catch(function () { fail(null); });
+}
+(function boot() {
+  var box = document.getElementById('loading');
+  if (window.top !== window.self) { box.textContent = 'Відкрий тест за посиланням напряму (не всередині іншої сторінки).'; return; }
+  if (!API) { box.textContent = 'Неповне посилання на тест. Відкрий посилання або QR-код, який дав учитель.'; return; }
+  (function tryLoad(n) {
+    callApi('config', [], function (c) { window.CFG = c; APP(); }, function (e) {
+      if (e && e.message) { box.textContent = e.message; return; }
+      box.textContent = 'Немає звʼязку з сервером. Пробуємо ще раз… (' + n + ')';
+      setTimeout(function () { tryLoad(n + 1); }, 3000 + Math.random() * 3000);
+    });
+  })(1);
+})();
+
+function APP() {
+  var $ = function (id) { return document.getElementById(id); };
+  var KEY = 'test_' + CFG.key, LET = ['А', 'Б', 'В', 'Г'], PER = (CFG.per || 60) * 1000;
+  var ACFG = { autoWord: CFG.autoWord || 0, wordOn: CFG.wordOn !== false, letters: CFG.wordLetters || 2 };
+  var st = load() || {};
+  var tasks = [], O = [], optEls = [], holders = [], W = CFG.win, skew = (W && W.now ? W.now - Date.now() : 0);
+  var finished = false, started = false, guarded = false, tickT = null, gateT = null;
+  var busy = false, inflA = 0, inflE = 0, waiters = [];
+  var ta = $('ans'), chk = $('chk'), lastGood = '', progr = false, autoGuard = null, okState = false;
+  var skipArmed = false, warnNoMatch = false, lastAct = '';
+  var tabId = Math.random().toString(36).slice(2), bc = null;
+  var baseSub = CFG.count + ' завдань · на кожне ' + perText(PER) + ' · кожне ' + fmt(CFG.pts) + ' б · разом ' + fmt(CFG.total) + ' б';
+
+  if (CFG.block) document.body.classList.add('lock');
+  document.title = CFG.title;
+  $('ttl').textContent = CFG.title;
+  $('sub').textContent = baseSub;
+  $('ptsTxt').textContent = fmt(CFG.pts) + ' б';
+  $('perTxt').textContent = perText(PER);
+  ta.maxLength = CFG.maxLen || 400;
+  CFG.classes.forEach(function (c) { var o = document.createElement('option'); o.value = c; o.textContent = c; $('cl').appendChild(o); });
+  $('cl').addEventListener('change', function () { $('lerr').textContent = ''; gate(); });
+
+  function perText(ms) { var s = Math.round(ms / 1000); return 'до ' + (s % 60 === 0 ? s / 60 + ' хв' : s >= 60 ? mmss(ms) + ' хв' : s + ' с'); }
+  function curW() { return (CFG.wins && CFG.wins[$('cl').value]) || CFG.win; }
+  function fmt(n) { return String(n).replace('.', ','); }
+  function load() { try { return JSON.parse(localStorage.getItem(KEY)); } catch (e) { return null; } }
+  function save() { try { localStorage.setItem(KEY, JSON.stringify(st)); } catch (e) {} }
+  function srv() { return Date.now() + skew; }
+  function mmss(ms) { var s = Math.max(0, Math.ceil(ms / 1000)), h = Math.floor(s / 3600), m = Math.floor(s % 3600 / 60), x = s % 60;
+    return (h ? h + ':' + (m < 10 ? '0' : '') : '') + m + ':' + (x < 10 ? '0' : '') + x; }
+  function hhmm(ms) { var s = Math.max(0, Math.ceil(ms / 1000)), h = Math.floor(s / 3600), m = Math.floor(s % 3600 / 60), x = s % 60;
+    return (h ? h + ' год ' : '') + m + ' хв ' + (x < 10 ? '0' : '') + x + ' с'; }
+  function errText(e) { return String((e && e.message) || 'Немає звʼязку або сервер зайнятий. Спробуй ще раз.').replace(/^Error:\s*/, ''); }
+  var toastT = null;
+  function toast(msg) { var t = $('toast'); t.textContent = msg; t.classList.add('on'); clearTimeout(toastT); toastT = setTimeout(function () { t.classList.remove('on'); }, 3500); }
+
+  /** Пристрій і браузер — для колонки «Пристрій / браузер» (щоб легко з'ясувати, чому в когось щось не показується) */
+  function devInfo() {
+    var ua = navigator.userAgent || '', m;
+    var os = (m = /Android\s([\d.]+)/.exec(ua)) ? 'Android ' + m[1] : /iPhone|iPad|iPod/.test(ua) ? 'iOS' : /CrOS/.test(ua) ? 'ChromeOS'
+      : /Windows/.test(ua) ? 'Windows' : /Mac OS X/.test(ua) ? (navigator.maxTouchPoints > 1 ? 'iPadOS' : 'macOS') : /Linux/.test(ua) ? 'Linux' : '?';
+    var model = (m = /Android[^;)]*;\s*([^;)]+?)(?:\sBuild|\))/.exec(ua)) && m[1] !== 'K' ? ' ' + m[1] : '';
+    var br = (m = /SamsungBrowser\/(\d+)/.exec(ua)) ? 'Samsung Internet ' + m[1] : /MiuiBrowser|XiaoMi/.test(ua) ? 'браузер Xiaomi'
+      : /OPR\/|Opera/.test(ua) ? 'Opera' : /YaBrowser/.test(ua) ? 'Yandex' : (m = /EdgA?\/(\d+)/.exec(ua)) ? 'Edge ' + m[1]
+      : (m = /(?:Firefox|FxiOS)\/(\d+)/.exec(ua)) ? 'Firefox ' + m[1] : (m = /CriOS\/(\d+)/.exec(ua)) ? 'Chrome iOS ' + m[1]
+      : (m = /Chrome\/(\d+)/.exec(ua)) ? 'Chrome ' + m[1] : /Safari/.test(ua) ? 'Safari' : '?';
+    var dark = false;
+    try { dark = window.matchMedia('(prefers-color-scheme: dark)').matches; } catch (e) {}
+    return os + model + ' · ' + br + ' · екран ' + (window.innerWidth || 0) + '×' + (window.innerHeight || 0) +
+      ' · темна тема: ' + (dark ? 'так' : 'ні') + (fsSupported() ? '' : ' · без повного екрана');
+  }
+
+  // ---- черга: відповіді й події надсилаються пакетами по черзі; повтори сервер відкидає ----
+  function pump() {
+    if (busy || !st.id) return;
+    st.q = st.q || []; st.ev = st.ev || [];
+    if (!st.q.length && !st.ev.length) { var w = waiters; waiters = []; w.forEach(function (f) { f(); }); return; }
+    var A = st.q.slice(0, 5), E = st.ev.slice(0, 25);
+    busy = true; inflA = A.length; inflE = E.length;
+    callApi('sync', [st.id, A, E], function (r) {
+      busy = false; st.q.splice(0, A.length); st.ev.splice(0, E.length); inflA = inflE = 0; save();
+      $('net').classList.add('hidden');
+      if (r && r.gone) { gone(); return; }
+      pump();
+    }, function (e) {
+      busy = false; inflA = inflE = 0;
+      if (e) { st.q.splice(0, A.length); st.ev.splice(0, E.length); save(); setTimeout(pump, 500); return; } // постійна помилка — не зациклюємось
+      $('net').classList.remove('hidden');
+      setTimeout(pump, 2500 + Math.random() * 2500);
+    });
+  }
+  function whenFlushed(f) { waiters.push(f); pump(); }
+  /** Сторінку ховають або закривають: надсилаємо все, що ще в черзі, «маячком» (дійде, навіть якщо вкладку закрито) */
+  function beacon() {
+    if (!st.id || !navigator.sendBeacon) return;
+    try {
+      var A = (st.q || []).slice(0, 5), E = (st.ev || []).slice(0, 25);
+      if (A.length || E.length) navigator.sendBeacon(API, JSON.stringify({ fn: 'sync', args: [st.id, A, E] }));
+    } catch (e) {}
+  }
+  var pumpT = null;
+  function pumpSoon() { clearTimeout(pumpT); pumpT = setTimeout(pump, 400); }
+  /** Подія для таблиці вчителя: [№, вид, секунд, № завдання, скільки разів, позначки, час, деталі] */
+  function addEv(kind, sec, extra, flags) {
+    if (!st.id || finished) return;
+    st.ev = st.ev || [];
+    var pos = Math.min(st.cur || 0, Math.max(0, tasks.length - 1)), now = srv();
+    var lastE = st.ev[st.ev.length - 1];
+    var instant = !(kind === 'exit' || kind === 'blur' || kind === 'narrow' || kind === 'fs' || kind === 'out' || kind === 'reload');
+    if (instant && lastE && st.ev.length > inflE && lastE[1] === kind && lastE[3] === pos && now - lastE[6] < 8000) {
+      lastE[4]++; lastE[6] = now; save(); pumpSoon(); return;
+    }
+    st.seq = (st.seq || 0) + 1;
+    st.ev.push([st.seq, kind, Math.round(sec || 0), pos, 1, flags || '', now, String(extra || '').slice(0, 100)]);
+    if (kind === 'copy' || kind === 'paste' || kind === 'voice' || kind === 'menu' || kind === 'keys' || kind === 'shot') st.cp = (st.cp || 0) + 1;
+    if (kind === 'nav' || kind === 'dup' || kind === 'translate') st.other = (st.other || 0) + 1;
+    save(); pumpSoon();
+  }
+
+  // ---- запуск: спершу перевіряємо, чи тест не відкрито вже в іншій вкладці ----
+  function dupCheck(cb) {
+    if (!window.BroadcastChannel) { cb(false); return; }
+    var other = false;
+    try {
+      if (!bc) {
+        bc = new BroadcastChannel('tabs_' + KEY);
+        bc.onmessage = function (m) {
+          var d = m.data || {};
+          if (d.from === tabId) return;
+          if (d.t === 'hi' && started && !finished) { bc.postMessage({ t: 'here', from: tabId, to: d.from }); addEv('dup'); toast('Тест відкрито ще в одній вкладці — це записано'); }
+          if (d.t === 'here' && d.to === tabId) other = true;
+        };
+      }
+      bc.postMessage({ t: 'hi', from: tabId });
+    } catch (e) { cb(false); return; }
+    setTimeout(function () { cb(other); }, 500);
+  }
+  $('dupBtn').onclick = function () { $('dupBtn').disabled = true; dupCheck(function (o) { $('dupBtn').disabled = false; if (!o) { $('dupBox').classList.add('hidden'); startup(); } }); };
+
+  function startup() {
+    $('loading').classList.remove('hidden');
+    if (st.done && CFG.onePerDevice) {
+      showDone(st.res || {});
+      if (st.id) callApi('getAttempt', [st.id], function (r) {
+        if (r && r.state === 'none') { st = {}; save(); finished = false; $('done').classList.add('hidden'); showLogin(); }
+      }, function () {});
+    } else if (st.id && !st.done) {
+      st.q = st.q || []; st.ev = st.ev || [];
+      $('loading').textContent = 'Відновлюємо твою роботу…';
+      whenFlushed(function () { loadAttempt(true); });
+    } else {
+      st = {}; save(); showLogin();
+    }
+  }
+
+  function loadAttempt(reload) {
+    callApi('getAttempt', [st.id], function (r) {
+      if (!r || r.state === 'none') { st = {}; save(); showLogin(); return; }
+      if (r.state === 'done') { st.done = true; st.res = r; save(); showDone(r); return; }
+      begin(r.p, reload);
+    }, function (e) {
+      if (e) { $('loading').textContent = errText(e); return; }
+      $('loading').textContent = 'Немає звʼязку. Пробуємо ще раз…';
+      setTimeout(function () { loadAttempt(reload); }, 3000 + Math.random() * 3000);
+    });
+  }
+
+  function showLogin() {
+    $('loading').classList.add('hidden');
+    $('login').classList.remove('hidden');
+    gate(); clearInterval(gateT); gateT = setInterval(gate, 1000);
+  }
+  function gate() {
+    W = curW();
+    var box = $('winMsg');
+    if (!$('cl').value && !W.off) { box.style.display = 'block'; box.textContent = 'Обери свій клас — і побачиш, коли для нього відкрито роботу.'; return; }
+    if (W.off) { box.style.display = 'none'; return; }
+    var s2 = W.state;
+    if (W.openMs) s2 = srv() < W.openMs ? 'before' : srv() >= W.closeMs ? 'after' : 'open';
+    box.style.display = 'block';
+    var other = ' Якщо вчитель дозволив тобі писати в інший час — введи свої дані (і код, якщо його дали) та натисни «Почати роботу».';
+    if (s2 === 'open') box.textContent = 'Роботу можна почати до ' + W.to + '. О ' + W.to + ' вона здасться автоматично.';
+    else if (s2 === 'before' && W.openMs) box.textContent = 'Робота відкриється о ' + W.from + '. Залишилось: ' + hhmm(W.openMs - srv()) + '.' + other;
+    else box.textContent = W.msg + other;
+  }
+
+  $('go').onclick = function () {
+    var nm = $('nm').value.trim().replace(/\s+/g, ' ');
+    var cl = $('cl').value.trim();
+    var cd = $('cd').value.trim();
+    if (nm.split(' ').length < 2) { $('lerr').textContent = "Вкажи прізвище та ім'я"; return; }
+    if (!cl) { $('lerr').textContent = 'Обери свій клас зі списку'; return; }
+    enterFs(); // повний екран можна ввімкнути лише після натискання кнопки
+    $('go').disabled = true; $('lerr').textContent = 'Зачекай…';
+    callApi('startAttempt', [nm, cl, cd, devInfo()], function (p) {
+      clearInterval(gateT);
+      st = { id: p.id, a: {}, q: [], ev: [], seq: p.es || 0, exits: 0, away: 0, maxAway: 0, cp: 0, narrow: 0, fs: 0, other: 0 };
+      save(); begin(p, false);
+    }, function (e) { $('go').disabled = false; $('lerr').textContent = errText(e); exitFs(); });
+  };
+
+  // ---- робота: завдання по одному ----
+  function begin(p, reload) {
+    if (started) return; started = true;
+    tasks = p.tasks; skew = p.now - Date.now(); PER = (p.per || CFG.per) * 1000;
+    st.end = p.end; st.cur = p.cur; st.dl = p.dl; st.name = p.name; st.cls = p.cls;
+    st.a = st.a || {}; st.q = st.q || []; st.ev = st.ev || [];
+    if ((st.seq || 0) < (p.es || 0)) st.seq = p.es;
+    if (!st.draft || st.draft.pos !== st.cur) st.draft = null;
+    save();
+    $('loading').classList.add('hidden'); $('login').classList.add('hidden');
+    $('sub').textContent = p.name + ' · ' + p.cls + ' · ' + CFG.count + ' завдань · на кожне ' + perText(PER) + ' · кожне ' + fmt(CFG.pts) + ' б · разом ' + fmt(CFG.total) + ' б';
+    $('quiz').classList.remove('hidden'); $('bar').classList.remove('hidden');
+    if (reload) {
+      // сторінку перезавантажили або відкрили знову: це ОДИН вихід (з часом, поки сторінки не було)
+      var sec = st.open ? Math.max(0, Math.round((srv() - st.open.at) / 1000)) : 0;
+      addEv('reload', sec, devInfo(), st.open ? (st.open.f || '').replace('h', '') : '');
+      st.exits = (st.exits || 0) + 1; st.away = (st.away || 0) + sec; st.maxAway = Math.max(st.maxAway || 0, sec);
+      st.open = null;
+      save();
+    }
+    showExits(); guard();
+    if (st.cur >= tasks.length) { submit(true); return; }
+    showQ();
+    tickT = setInterval(tick, 500); tick();
+    if (reload) showCover('back', 0);
+  }
+
+  function showQ() {
+    var t = tasks[st.cur];
+    skipArmed = false; warnNoMatch = false; lastAct = ''; autoGuard = null;
+    $('qerr').textContent = '';
+    $('qno').textContent = 'Завдання ' + (st.cur + 1) + ' з ' + tasks.length;
+    $('cnt').textContent = 'Завдання ' + (st.cur + 1) + ' / ' + tasks.length;
+    $('pr').style.width = Math.round(st.cur / tasks.length * 100) + '%';
+    $('qsec').textContent = CFG.sections[t.s] || '';
+    O = AC.prep(t.o);
+    var box = $('opts'); box.innerHTML = '';
+    optEls = t.o.map(function (txt, i) {
+      var d = document.createElement('div'); d.className = 'opt';
+      var l = document.createElement('span'); l.className = 'l'; l.textContent = LET[i] + ')';
+      var x = document.createElement('div'); x.className = 'ot'; x._t = txt;
+      d.appendChild(l); d.appendChild(x); box.appendChild(d);
+      return d;
+    });
+    $('qtext')._t = t.q;
+    holders = [$('qtext')].concat(optEls.map(function (d) { return d.querySelector('.ot'); }));
+    holders.forEach(function (h) { h._w = 0; observe(h); });
+    paintAll(); verifyPaint();
+    var dr = st.draft && st.draft.pos === st.cur ? st.draft : null;
+    setVal(dr ? dr.text : '');
+    setOk(!!(dr && dr.ok), true);
+    st.af = dr ? dr.af : 0;
+    update();
+    window.scrollTo(0, 0);
+  }
+
+  // ---- текст завдань — картинкою (canvas) з ВЛАСНИМ білим тлом і чорним текстом ----
+  // Раніше текст малювався кольором сторінки на прозорому тлі: коли браузер примусово вмикав темну тему,
+  // тло ставало темним, а текст лишався темним — його не було видно. Тепер картинка самодостатня.
+  function wrapLines(ctx, text, maxW) {
+    var lines = [], line = '';
+    String(text).split(/\s+/).filter(String).forEach(function (wd) {
+      while (ctx.measureText(wd).width > maxW && wd.length > 1) { // дуже довге слово — переносимо по літерах
+        var cut = wd.length - 1;
+        while (cut > 1 && ctx.measureText(wd.slice(0, cut)).width > maxW) cut--;
+        if (line) { lines.push(line); line = ''; }
+        lines.push(wd.slice(0, cut)); wd = wd.slice(cut);
+      }
+      var t2 = line ? line + ' ' + wd : wd;
+      if (line && ctx.measureText(t2).width > maxW) { lines.push(line); line = wd; } else line = t2;
+    });
+    if (line) lines.push(line);
+    return lines.length ? lines : [''];
+  }
+  function paint(h) {
+    var txt = h._t || '';
+    if (!CFG.pic || st.plain || h._plain) {
+      if (h._c) { try { h.removeChild(h._c); } catch (e) {} h._c = null; }
+      if (h.textContent !== txt) h.textContent = txt;
+      h.classList.add('plain'); h._w = h.clientWidth || 1; return true;
+    }
+    h.classList.remove('plain');
+    var w = h.clientWidth;
+    if (!w) return false;
+    var c = h._c;
+    if (!c || c.parentNode !== h) { c = h._c = document.createElement('canvas'); h.textContent = ''; h.appendChild(c); }
+    var ctx = c.getContext && c.getContext('2d');
+    if (!ctx) return false;
+    var cs = getComputedStyle(h), fsz = parseFloat(cs.fontSize) || 16, lh = Math.round(fsz * 1.45), pad = 6;
+    var font = (cs.fontWeight || '400') + ' ' + fsz + 'px ' + (cs.fontFamily || 'Arial, sans-serif');
+    ctx.font = font;
+    var lines = wrapLines(ctx, txt, w - pad * 2);
+    var dpr = Math.min(3, window.devicePixelRatio || 1), hh = lines.length * lh + pad * 2;
+    c.width = Math.ceil(w * dpr); c.height = Math.ceil(hh * dpr);
+    c.style.width = w + 'px'; c.style.height = hh + 'px';
+    ctx = c.getContext('2d'); ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    ctx.fillStyle = '#ffffff'; ctx.fillRect(0, 0, w, hh);
+    ctx.font = font; ctx.fillStyle = '#111111'; ctx.textBaseline = 'middle';
+    lines.forEach(function (l, i) { ctx.fillText(l, pad, pad + i * lh + lh / 2 + 1); });
+    h._w = w;
+    return true;
+  }
+  function paintAll() { holders.forEach(function (h) { paint(h); }); }
+  var ro = window.ResizeObserver ? new ResizeObserver(function (ents) {
+    ents.forEach(function (en) { var h = en.target; if (h.clientWidth && h.clientWidth !== h._w) paint(h); });
+  }) : null;
+  function observe(h) { if (ro && !h._obs) { ro.observe(h); h._obs = 1; } }
+  var rsT = null;
+  window.addEventListener('resize', function () { clearTimeout(rsT); rsT = setTimeout(paintAll, 150); });
+  try { if (document.fonts && document.fonts.ready) document.fonts.ready.then(function () { if (holders.length) paintAll(); }); } catch (e) {}
+  /** Якщо картинку не вдалося намалювати (сторінка видима, а місця під текст 0) — показуємо звичайними літерами */
+  function verifyPaint() {
+    [300, 1500].forEach(function (ms, k) {
+      setTimeout(function () {
+        if (!started || finished || document.body.classList.contains('away') || document.hidden) return;
+        holders.forEach(function (h) {
+          if (h._plain || st.plain || !CFG.pic) return;
+          if (!h._c || !h._w || h._w !== h.clientWidth) {
+            if (paint(h)) return;
+            if (k === 1) { h._plain = true; paint(h); if (!st.paintLogged) { st.paintLogged = 1; addEv('paintfail', 0, devInfo()); } }
+          }
+        });
+      }, ms);
+    });
+  }
+  $('nosee').onclick = function () {
+    if (!st.plain) { st.plain = true; save(); addEv('nosee', 0, devInfo()); }
+    paintAll(); toast('Текст завдань тепер показано звичайними літерами');
+  };
+
+  // ---- поле відповіді: автодописування слів, весь варіант з 3-го слова, ✓, заборона голосу й вставлення ----
+  function setVal(v) {
+    progr = true; ta.value = v; progr = false; lastGood = v;
+    try { if (document.activeElement === ta) ta.setSelectionRange(v.length, v.length); } catch (e) {}
+  }
+  function inserted(a, b) {
+    var p = 0, n = Math.min(a.length, b.length);
+    while (p < n && a.charCodeAt(p) === b.charCodeAt(p)) p++;
+    var s = 0;
+    while (s < n - p && a.charCodeAt(a.length - 1 - s) === b.charCodeAt(b.length - 1 - s)) s++;
+    return b.slice(p, b.length - s);
+  }
+  var LETTER = '0-9A-Za-zА-Яа-яЁёІіЇїЄєҐґ';
+  var MULTI = new RegExp('[' + LETTER + '][\\s,.;:!?«»"()–—]+[' + LETTER + ']');
+  ta.addEventListener('beforeinput', function (e) {
+    var it = e.inputType || '';
+    if (CFG.block && /^insertFrom(Paste|Drop|Yank|PasteAsQuotation)$|^insertLink$/.test(it)) {
+      e.preventDefault(); addEv('paste', 0, it); hint('⚠️ Вставляти текст не можна — пиши з клавіатури (слова допишуться самі).', 'bad'); return;
+    }
+    if (it === 'insertLineBreak' || it === 'insertParagraph') { e.preventDefault(); confirmAns(); try { ta.blur(); } catch (x) {} }
+  });
+  ta.addEventListener('keydown', function (e) {
+    if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); confirmAns(); try { ta.blur(); } catch (x) {} }
+  });
+  ta.addEventListener('input', function (e) {
+    if (progr) return;
+    var v = ta.value, it = e.inputType || '';
+    // клавіатура телефона інколи повторно вставляє літери, які ми щойно замінили дописаним словом
+    if (autoGuard && Date.now() - autoGuard.at < 800 && autoGuard.tail) {
+      var g = autoGuard.val, g2 = g.replace(/\s+$/, '');
+      if (v === g + autoGuard.tail || v === g2 + autoGuard.tail || v === g2 + ' ' + autoGuard.tail) { setVal(g); autoGuard = null; return; }
+    }
+    autoGuard = null;
+    var grew = v.length > lastGood.length;
+    if (CFG.noVoice && !/^delete/.test(it) && (grew || /^insert/.test(it))) {
+      var add = inserted(lastGood, v);
+      if (MULTI.test(add) || add.replace(/\s/g, '').length > 25) {
+        setVal(lastGood);
+        try { ta.blur(); } catch (x) {}
+        addEv(/Paste|Drop/.test(it) ? 'paste' : 'voice', 0, add.slice(0, 60));
+        hint('⚠️ Кілька слів одразу не приймаються (голосове введення чи вставлення). Пиши з клавіатури — слова допишуться самі.', 'bad');
+        return;
+      }
+    }
+    lastGood = v;
+    if (okState) setOk(false);
+    var atEnd = ta.selectionStart === v.length && ta.selectionEnd === v.length;
+    if (atEnd && !/^delete/.test(it) && (grew || /^insert/.test(it))) {
+      var snap = v;
+      setTimeout(function () { if (ta.value === snap) runAuto(snap); }, 0);
+    }
+    update();
+  });
+  function runAuto(v) {
+    var r = AC.analyze(v, O, ACFG);
+    if (!r.act) return;
+    setVal(r.val);
+    autoGuard = { val: r.val, tail: r.part, at: Date.now() };
+    if (r.act === 'fill') st.af = 1;
+    lastAct = r.act;
+    update();
+  }
+  /** Підказка під полем і підсвічування варіанта, який учень пише (не каже, чи він правильний) */
+  function update() {
+    var v = ta.value, r = AC.analyze(v, O, { autoWord: 0, wordOn: false });
+    optEls.forEach(function (d, i) { d.classList.toggle('on', CFG.hint && (r.match === i || (r.match < 0 && r.cand.length === 1 && r.cand[0] === i && v.trim()))); });
+    chk.disabled = !v.trim();
+    if (okState) {
+      hint(r.match >= 0 ? '✓ Відповідь підтверджено. Натисни «Записати й далі». (Щоб змінити — торкнися поля.)'
+        : '✓ Підтверджено, але текст не збігається повністю з жодним варіантом. (Щоб змінити — торкнися поля.)', 'good');
+    } else if (!v.trim()) {
+      hint('Обери варіант і почни його писати: після ' + (ACFG.letters || 2) + ' правильних літер слово допишеться саме' +
+        (ACFG.autoWord ? ', а з ' + ACFG.autoWord + '-го слова підставиться весь варіант.' : '.'), '');
+    } else if (r.match >= 0) {
+      hint(CFG.hint ? '✅ Текст збігається з варіантом ' + LET[r.match] + '. Перевір і натисни ✓ праворуч від поля.' : 'Перевір текст і натисни ✓ праворуч від поля.', 'good');
+    } else if (r.bad) {
+      hint('⚠️ «' + r.bad + '» — такого слова немає на цьому місці в жодному варіанті. Перевір літери.', 'bad');
+    } else if (CFG.hint && r.cand.length === 1) {
+      hint('Пишеш варіант ' + LET[r.cand[0]] + '… продовжуй.', '');
+    } else hint('Продовжуй писати…', '');
+    st.draft = { pos: st.cur, text: v, ok: okState ? 1 : 0, af: st.af || 0 }; save();
+  }
+  function hint(t, cls) { var h = $('hint'); h.textContent = t; h.className = 'hint' + (cls ? ' ' + cls : ''); }
+  function setOk(on, silent) {
+    okState = !!on;
+    ta.readOnly = okState;
+    ta.classList.toggle('ok', okState);
+    chk.classList.toggle('on', okState);
+    if (!silent) update();
+  }
+  function confirmAns() {
+    var v = ta.value.trim();
+    if (!v) { hint('Спершу напиши відповідь.', 'bad'); return; }
+    if (okState) return;
+    var r = AC.analyze(v, O, { autoWord: 0, wordOn: false });
+    if (r.match < 0 && !warnNoMatch) {
+      warnNoMatch = true;
+      hint('⚠️ Текст не збігається повністю з жодним варіантом — так його можуть не зарахувати. Допиши або натисни ✓ ще раз, щоб підтвердити так.', 'bad');
+      return;
+    }
+    $('qerr').textContent = '';
+    setOk(true);
+  }
+  chk.addEventListener('mousedown', function (e) { e.preventDefault(); }); // не забирати фокус і не мерехтіти клавіатурою
+  chk.onclick = function () { if (okState) { setOk(false); ta.focus(); return; } confirmAns(); try { ta.blur(); } catch (x) {} };
+  ta.addEventListener('click', function () { if (okState) { setOk(false); ta.focus(); } });
+  $('next').onclick = function () {
+    var v = ta.value.trim();
+    if (!v) {
+      if (!skipArmed) { skipArmed = true; $('qerr').textContent = 'Ти нічого не написав(-ла). Натисни «Записати й далі» ще раз, щоб пропустити це завдання.'; return; }
+    } else if (CFG.needOk && !okState) {
+      $('qerr').textContent = 'Спершу підтверди відповідь галочкою ✓ праворуч від поля.';
+      chk.classList.remove('pulse'); void chk.offsetWidth; chk.classList.add('pulse');
+      return;
+    }
+    pushCur(false);
+    if (st.cur >= tasks.length) { submit(false); return; }
+    showQ();
+  };
+  /** Записати поточне завдання в чергу й перейти до наступного. auto — минув час на завдання */
+  function pushCur(auto) {
+    var pos = st.cur, txt = ta.value.trim(), t = tasks[pos];
+    st.q.push({ p: pos, l: txt, m: { ok: okState ? 1 : 0, t: Math.round(auto ? Math.min(srv(), st.dl) : srv()), af: st.af ? 1 : 0 } });
+    if (txt && t) st.a[t.n] = txt;
+    st.cur = pos + 1;
+    st.dl = auto ? st.dl + PER : srv() + PER;
+    st.draft = null; st.af = 0;
+    setVal(''); setOk(false, true);
+    save(); pump();
+  }
+
+  function tick() {
+    if (finished) return;
+    var now = srv();
+    if (now >= st.end) { if (st.cur < tasks.length) pushCur(true); submit(true); return; }
+    var moved = false;
+    while (st.cur < tasks.length && now >= st.dl) { pushCur(true); moved = true; }
+    if (st.cur >= tasks.length) { submit(true); return; }
+    if (moved) { showQ(); toast('Час на завдання минув — написане збережено'); }
+    var left = st.end - now, qLeft = Math.min(st.dl, st.end) - now;
+    $('tm').textContent = mmss(left); $('tm').classList.toggle('low', left < 60000);
+    $('qtm').textContent = mmss(qLeft); $('qtm').classList.toggle('low', qLeft < 15000);
+    $('qpr').style.width = Math.max(0, Math.min(100, qLeft / PER * 100)) + '%';
+    evalAway();
+  }
+
+  function submit(auto) {
+    if (finished) return;
+    finished = true; clearInterval(tickT);
+    document.body.classList.remove('away');
+    $('quiz').classList.add('hidden'); $('fin').classList.remove('hidden');
+    $('finTxt').textContent = auto ? 'Час вийшов. Здаємо роботу…' : 'Здаємо роботу…';
+    exitFs(); releaseWake();
+    var meta = { exits: st.exits || 0, away: st.away || 0, maxAway: st.maxAway || 0, cp: st.cp || 0, narrow: st.narrow || 0,
+      fs: st.fs || 0, other: st.other || 0, auto: auto };
+    var flushed = false;
+    setTimeout(function () { if (!flushed) { flushed = true; send(1); } }, 20000); // не чекаємо вічно
+    whenFlushed(function () { if (!flushed) { flushed = true; send(1); } });
+    function send(n) {
+      callApi('submitAttempt', [st.id, st.a, meta], function (r) {
+        st.done = true; st.res = r; st.q = []; st.ev = []; save(); showDone(r);
+      }, function (e) {
+        if (e && /не знайдено|анульовано/i.test(e.message)) { $('finTxt').textContent = errText(e); return; }
+        $('finTxt').textContent = 'Немає звʼязку — роботу збережено на пристрої. Пробуємо ще раз… (' + n + ')';
+        setTimeout(function () { send(n + 1); }, 3000 + Math.random() * 3000);
+      });
+    }
+  }
+  /** Сервер уже здав цю роботу (наприклад, минув час) */
+  function gone() {
+    callApi('getAttempt', [st.id], function (r) {
+      if (r && r.state === 'done') { finished = true; clearInterval(tickT); st.done = true; st.res = r; save(); showDone(r); }
+    }, function () {});
+  }
+  function showDone(r) {
+    finished = true;
+    document.body.classList.remove('away');
+    ['loading', 'login', 'quiz', 'fin', 'bar'].forEach(function (id) { $(id).classList.add('hidden'); });
+    var d = $('done'); d.classList.remove('hidden');
+    var html = '<h2>Роботу здано ✅</h2>';
+    if (r && r.score !== undefined) html += '<div class="big">' + fmt(r.score) + ' з ' + fmt(r.max) + '</div><p class="mut">Правильних відповідей: ' + (r.right || 0) + ' з ' + CFG.count + '</p>';
+    html += '<p class="mut">Можна закрити сторінку.</p>';
+    d.innerHTML = html;
+  }
+  function showExits() { var n = st.exits || 0; $('ex').textContent = 'Виходів: ' + n; $('ex').classList.toggle('bad', n > 0); }
+
+  // ================= ФІКСАЦІЯ ВИХОДІВ =================
+  // Умови «учня немає на сторінці»: h — сторінку сховано (інша вкладка/додаток, згорнув, екран вимкнено);
+  // b — сторінку видно, але фокус деінде (Lens, Circle to Search, Gemini, шторка, адресний рядок, інше вікно);
+  // n — вікно звужено (бічна панель, розділений екран); f — вийшов із повного екрана.
+  var cond = { h: false, b: false, n: false, f: false }, ep = null, coverMode = '', fsWanted = false, narrowClicks = 0, baseW = {}, unloading = false;
+  function fsSupported() { var d = document.documentElement; return !!(d.requestFullscreen || d.webkitRequestFullscreen); }
+  function fsActive() { return !!(document.fullscreenElement || document.webkitFullscreenElement); }
+  function enterFs() {
+    if (!CFG.fs || !fsSupported()) return;
+    var d = document.documentElement, p = null;
+    try { p = d.requestFullscreen ? d.requestFullscreen({ navigationUI: 'hide' }) : d.webkitRequestFullscreen(); } catch (e) { p = null; }
+    if (p && p.then) p.then(function () { fsWanted = true; evalAway(); }, function () { fsWanted = false; evalAway(); });
+    else setTimeout(function () { fsWanted = fsActive(); evalAway(); }, 400);
+  }
+  function exitFs() { fsWanted = false; try { if (fsActive()) (document.exitFullscreen || document.webkitExitFullscreen).call(document); } catch (e) {} }
+  function oriKey() {
+    var o = screen.orientation && screen.orientation.type;
+    if (o) return o.indexOf('portrait') >= 0 ? 'p' : 'l';
+    if (typeof window.orientation === 'number') return Math.abs(window.orientation) === 90 ? 'l' : 'p';
+    return screen.width > screen.height ? 'l' : 'p';
+  }
+  function isNarrow() {
+    // ширина у фізичних пікселях: масштаб сторінки (Ctrl+колесо) її не змінює, а бічна панель — змінює
+    var k = oriKey(), w = (window.innerWidth || document.documentElement.clientWidth || 0) * (window.devicePixelRatio || 1);
+    if (!w) return false;
+    if (!baseW[k] || (!ep && w > baseW[k])) baseW[k] = Math.max(baseW[k] || 0, w);
+    return w < baseW[k] * 0.85 - 8;
+  }
+  function evalAway() {
+    if (!started || finished || unloading) return;
+    cond.h = document.visibilityState === 'hidden' || document.hidden === true;
+    cond.b = !cond.h && typeof document.hasFocus === 'function' && !document.hasFocus();
+    cond.n = !!CFG.narrow && isNarrow();
+    cond.f = !!CFG.fs && fsWanted && !fsActive();
+    var any = cond.h || cond.b || cond.n || cond.f, now = srv();
+    if (any && !ep) {
+      ep = { at: now, pos: st.cur, f: {}, out: false, hbEnd: 0 };
+      if (CFG.hide) document.body.classList.add('away');
+    }
+    if (ep) {
+      ['h', 'b', 'n', 'f'].forEach(function (k) { if (cond[k]) ep.f[k] = 1; });
+      if (cond.h || cond.b) ep.hbEnd = 0; else if ((ep.f.h || ep.f.b) && !ep.hbEnd) ep.hbEnd = now;
+      st.open = { at: ep.at, k: epKind(), f: epFlags(), pos: ep.pos }; save();
+      if (cond.h && !ep.out) { ep.out = true; addEv('out', 0); clearTimeout(pumpT); beacon(); pump(); }
+      if (!any) endEp(now);
+      else showCover(cond.h || cond.b ? 'away' : cond.n ? 'narrow' : 'fs', 0);
+    }
+  }
+  function epKind() { return ep.f.h ? 'exit' : ep.f.b ? 'blur' : ep.f.n ? 'narrow' : 'fs'; }
+  function epFlags() { var k = epKind(), m = { exit: 'h', blur: 'b', narrow: 'n', fs: 'f' }[k]; return ['h', 'b', 'n', 'f'].filter(function (x) { return ep.f[x] && x !== m; }).join(''); }
+  function endEp(now) {
+    var kind = epKind(), flags = epFlags();
+    var dur = Math.max(0, Math.round((((ep.f.h || ep.f.b) && ep.hbEnd ? ep.hbEnd : now) - ep.at) / 1000));
+    var real = dur >= (CFG.minAway || 0) || ep.out;
+    if (real) {
+      addEv(kind, dur, '', flags);
+      if (kind === 'exit' || kind === 'blur') st.exits = (st.exits || 0) + 1;
+      if (kind !== 'fs') { st.away = (st.away || 0) + dur; st.maxAway = Math.max(st.maxAway || 0, dur); }
+      if (kind === 'narrow' || flags.indexOf('n') >= 0) st.narrow = (st.narrow || 0) + 1;
+      if (kind === 'fs' || flags.indexOf('f') >= 0) st.fs = (st.fs || 0) + 1;
+      showExits();
+    }
+    ep = null; st.open = null; narrowClicks = 0; save();
+    if (real && coverMode !== 'fsback') showCover('back', dur);
+    else hideCover();
+    wake();
+  }
+  function showCover(mode, dur) {
+    if (!CFG.hide && mode !== 'back') return;
+    coverMode = mode;
+    document.body.classList.add('away');
+    var c = $('cover');
+    c.classList.toggle('bad', mode === 'back' || mode === 'away');
+    $('covBtn').classList.toggle('hidden', mode === 'away');
+    if (mode === 'away') {
+      $('covIco').textContent = '🔒'; $('covT').textContent = 'Завдання сховано';
+      $('covTxt').textContent = 'Ти не на сторінці тесту. Це записується в таблицю вчителя, а час іде.';
+      $('covSub').textContent = 'Повернися — торкнися цієї сторінки.';
+    } else if (mode === 'narrow') {
+      $('covIco').textContent = '↔️'; $('covT').textContent = 'Вікно звужено';
+      $('covTxt').textContent = 'Відкрито бічну панель, розділений екран або плаваюче вікно. Закрий їх або розгорни вікно на весь екран.';
+      $('covSub').textContent = 'Це записується в таблицю вчителя. Час іде.';
+      $('covBtn').textContent = 'Продовжити';
+    } else if (mode === 'fs') {
+      $('covIco').textContent = '⛶'; $('covT').textContent = 'Тест має бути на весь екран';
+      $('covTxt').textContent = 'Ти вийшов(-ла) з повноекранного режиму. Натисни «Продовжити» — тест знову відкриється на весь екран.';
+      $('covSub').textContent = 'Це записується в таблицю вчителя. Час іде.';
+      $('covBtn').textContent = 'Продовжити';
+    } else {
+      $('covIco').textContent = '⚠️'; $('covT').textContent = dur ? 'Вихід зафіксовано (' + dur + ' с)' : 'Сторінку відкрито знову';
+      $('covTxt').textContent = dur ? 'Ти виходив(-ла) зі сторінки тесту. Це записано в таблицю вчителя. Час не зупинявся.'
+        : 'Перезавантаження записано в таблицю вчителя. Час не зупинявся.';
+      $('covSub').textContent = '';
+      $('covBtn').textContent = 'Продовжити';
+    }
+  }
+  function hideCover() { coverMode = ''; document.body.classList.remove('away'); paintAll(); verifyPaint(); }
+  $('covBtn').onclick = function () {
+    if (coverMode === 'narrow') {
+      narrowClicks++;
+      if (narrowClicks >= 2) { baseW[oriKey()] = window.innerWidth * (window.devicePixelRatio || 1); evalAway(); return; } // друге натискання — продовжити так (записано)
+      enterFs(); toast('Закрий бічну панель або розгорни вікно. Натисни «Продовжити» ще раз, щоб працювати так (це записано).');
+      setTimeout(evalAway, 600); return;
+    }
+    // повертаємо повний екран (зокрема після перезавантаження сторінки) — це можна лише після натискання кнопки
+    if (CFG.fs && fsSupported() && !fsActive()) { if (ep) coverMode = 'fsback'; enterFs(); }
+    if (ep) { setTimeout(evalAway, 700); return; }
+    hideCover();
+  };
+
+  function guard() {
+    if (guarded) return; guarded = true;
+    ['visibilitychange', 'webkitvisibilitychange'].forEach(function (n) { document.addEventListener(n, evalAway); });
+    ['blur', 'focus', 'pageshow', 'resize'].forEach(function (n) { window.addEventListener(n, evalAway); });
+    ['fullscreenchange', 'webkitfullscreenchange'].forEach(function (n) { document.addEventListener(n, function () { setTimeout(evalAway, 50); }); });
+    try { if (screen.orientation) screen.orientation.addEventListener('change', function () { setTimeout(evalAway, 300); }); } catch (e) {}
+    window.addEventListener('pagehide', function () {
+      if (!started || finished) return;
+      if (!ep) { ep = { at: srv(), pos: st.cur, f: { h: 1 }, out: false, hbEnd: 0 }; }
+      ep.f.h = 1;
+      st.open = { at: ep.at, k: 'exit', f: epFlags(), pos: ep.pos };
+      if (!ep.out) { ep.out = true; addEv('out', 0); }
+      unloading = true; // сторінку закривають або перезавантажують: вихід закриється, коли її відкриють знову
+      save(); beacon();
+    });
+    window.addEventListener('pageshow', function (e) { if (e.persisted) { unloading = false; evalAway(); } });
+    window.addEventListener('beforeunload', function (e) {
+      if (!started || finished) return;
+      e.preventDefault(); e.returnValue = ''; return '';
+    });
+    // кнопка «Назад» у браузері
+    try { history.pushState({ t: 1 }, '', location.href); } catch (e) {}
+    window.addEventListener('popstate', function () {
+      if (!started || finished) return;
+      try { history.pushState({ t: 1 }, '', location.href); } catch (e) {}
+      addEv('nav'); toast('Кнопка «Назад» під час тесту не працює — це записано');
+    });
+    // копіювання, вставлення, меню, перетягування, виділення
+    if (CFG.block) {
+      ['copy', 'cut'].forEach(function (n) { document.addEventListener(n, function (e) { e.preventDefault(); addEv('copy', 0, n); }, true); });
+      document.addEventListener('paste', function (e) { e.preventDefault(); addEv('paste', 0, 'paste'); hint('⚠️ Вставляти текст не можна — пиши з клавіатури.', 'bad'); }, true);
+      document.addEventListener('drop', function (e) { e.preventDefault(); addEv('paste', 0, 'перетягування'); }, true);
+      document.addEventListener('dragstart', function (e) { e.preventDefault(); }, true);
+      document.addEventListener('contextmenu', function (e) { e.preventDefault(); addEv('menu'); }, true);
+      document.addEventListener('selectstart', function (e) { if (e.target !== ta) e.preventDefault(); }, true);
+    }
+    // клавіші: PrintScreen, Ctrl+P/C/F/T/…, F12
+    var shotAt = 0;
+    function shot(x) { if (Date.now() - shotAt < 1500) return; shotAt = Date.now(); addEv('shot', 0, x); }
+    document.addEventListener('keydown', function (e) {
+      if (!started || finished) return;
+      var k = String(e.key || '').toLowerCase(), c = e.ctrlKey || e.metaKey;
+      if (k === 'printscreen') { shot('PrintScreen'); return; }
+      if (e.metaKey && e.shiftKey && (k === 's' || k === '3' || k === '4' || k === '5')) { shot('скріншот-інструмент'); return; }
+      if (c && k === 'p') { e.preventDefault(); shot('Ctrl+P (друк)'); return; }
+      if (k === 'f12' || (c && e.shiftKey && /^[ijc]$/.test(k))) { e.preventDefault(); addEv('keys', 0, 'F12 / інструменти розробника'); return; }
+      if (c && !e.shiftKey && /^[sufghjkloedtnwr]$/.test(k)) { e.preventDefault(); addEv('keys', 0, 'Ctrl+' + k.toUpperCase()); return; }
+      if (c && k === 'a' && e.target !== ta) { e.preventDefault(); }
+    }, true);
+    document.addEventListener('keyup', function (e) { if (started && !finished && String(e.key || '').toLowerCase() === 'printscreen') shot('PrintScreen'); }, true);
+    // перекладач сторінки і розширення, що вбудовуються в сторінку
+    try {
+      var tr = false, extSeen = {};
+      new MutationObserver(function () {
+        var h = document.documentElement;
+        if (!tr && (/translated/.test(h.className) || (h.lang && !/^uk/i.test(h.lang)))) { tr = true; addEv('translate', 0, h.lang || h.className); }
+      }).observe(document.documentElement, { attributes: true, attributeFilter: ['class', 'lang'] });
+      new MutationObserver(function (ms) {
+        ms.forEach(function (m) {
+          Array.prototype.forEach.call(m.addedNodes, function (n) {
+            if (n.nodeType !== 1 || /^(SCRIPT|STYLE|LINK|META|NOSCRIPT)$/.test(n.tagName)) return;
+            var tag = (n.tagName + (n.id ? '#' + n.id : '') + (typeof n.className === 'string' && n.className ? '.' + n.className.split(' ')[0] : '')).slice(0, 60);
+            if (!extSeen[tag]) { extSeen[tag] = 1; addEv('ext', 0, tag); }
+          });
+        });
+      }).observe(document.body, { childList: true });
+    } catch (e) {}
+    // курсор миші надовго за межами сторінки (комп'ютер)
+    var mouseOut = 0;
+    document.documentElement.addEventListener('mouseleave', function () { mouseOut = srv(); });
+    document.documentElement.addEventListener('mouseenter', function () {
+      if (mouseOut && !finished) { var s = Math.round((srv() - mouseOut) / 1000); if (s >= 3) addEv('mouse', 0, s + ' с'); }
+      mouseOut = 0;
+    });
+    setInterval(evalAway, 1000); // підстраховка: деякі браузери не надсилають подію blur
+    wake();
+  }
+
+  // ---- екран телефона під час тесту сам не гасне ----
+  var wl = null;
+  function wake() { try { if (navigator.wakeLock && !wl && document.visibilityState === 'visible') navigator.wakeLock.request('screen').then(function (l) { wl = l; l.addEventListener('release', function () { wl = null; }); }, function () {}); } catch (e) {} }
+  function releaseWake() { try { if (wl) wl.release(); } catch (e) {} wl = null; }
+
+  // ---- старт сторінки (в самому кінці, коли все вже оголошено) ----
+  dupCheck(function (other) {
+    if (other) { $('loading').classList.add('hidden'); $('dupBox').classList.remove('hidden'); return; }
+    startup();
+  });
+}
+</script>
+</body>
+</html>
